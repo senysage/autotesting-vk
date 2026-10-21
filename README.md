@@ -1,1 +1,3 @@
-# autotesting-vk
+# ЛР 1
+
+Используется локальный mock API
