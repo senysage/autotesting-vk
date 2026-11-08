@@ -9,11 +9,17 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Timeout;
 import pages.AddRemoveElementsPage;
 import pages.CheckboxesPage;
 import pages.DropdownPage;
 import pages.LoginPage;
 
+import java.util.function.Consumer;
+
+@Tag("ui")
+@Timeout(value = 45, threadMode = Timeout.ThreadMode.SAME_THREAD)
 abstract class BaseUiTest {
     private static Playwright playwright;
     private static Browser browser;
@@ -29,11 +35,7 @@ abstract class BaseUiTest {
 
     @BeforeEach
     void createContextAndPage() {
-        context = browser.newContext(new Browser.NewContextOptions()
-                .setBaseURL(System.getProperty("baseUrl", "https://the-internet.herokuapp.com/"))
-                .setViewportSize(1280, 900));
-        context.setDefaultTimeout(10_000);
-        context.setDefaultNavigationTimeout(30_000);
+        context = newContext();
         page = context.newPage();
     }
 
@@ -51,6 +53,21 @@ abstract class BaseUiTest {
 
     protected AddRemoveElementsPage openAddRemoveElementsPage() {
         return new AddRemoveElementsPage(page).open();
+    }
+
+    protected void withCheckboxesPage(Consumer<CheckboxesPage> scenario) {
+        try (BrowserContext dynamicContext = newContext()) {
+            scenario.accept(new CheckboxesPage(dynamicContext.newPage()).open());
+        }
+    }
+
+    private BrowserContext newContext() {
+        BrowserContext newContext = browser.newContext(new Browser.NewContextOptions()
+                .setBaseURL(System.getProperty("baseUrl", "https://the-internet.herokuapp.com/"))
+                .setViewportSize(1280, 900));
+        newContext.setDefaultTimeout(10_000);
+        newContext.setDefaultNavigationTimeout(30_000);
+        return newContext;
     }
 
     @AfterEach

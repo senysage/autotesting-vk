@@ -5,6 +5,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import java.util.regex.Pattern;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public final class LoginPage {
     private final Page page;
@@ -23,7 +24,15 @@ public final class LoginPage {
 
     public LoginPage open() {
         page.navigate("/login");
-        assertThat(loginButton).isVisible();
+        return assertOpened();
+    }
+
+    public LoginPage assertOpened() {
+        assertAll("Форма входа",
+                () -> assertThat(page).hasURL(Pattern.compile("/login$")),
+                () -> assertThat(usernameInput).isVisible(),
+                () -> assertThat(passwordInput).isVisible(),
+                () -> assertThat(loginButton).isVisible());
         return this;
     }
 
@@ -38,11 +47,11 @@ public final class LoginPage {
     }
 
     public LoginPage assertError(String expectedMessage) {
-        assertThat(page).hasURL(Pattern.compile("/login$"));
-        assertThat(flashMessage).containsText(expectedMessage);
-        assertThat(flashMessage).hasClass(Pattern.compile(".*error.*"));
-        assertThat(loginButton).isVisible();
-
+        assertAll("Ошибка авторизации",
+                () -> assertThat(page).hasURL(Pattern.compile("/login$")),
+                () -> assertThat(flashMessage).containsText(expectedMessage),
+                () -> assertThat(flashMessage).hasClass(Pattern.compile(".*error.*")),
+                () -> assertThat(loginButton).isVisible());
         return this;
     }
 

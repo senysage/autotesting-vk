@@ -5,6 +5,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import java.util.regex.Pattern;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public final class SecureAreaPage {
     private final Page page;
@@ -20,11 +21,16 @@ public final class SecureAreaPage {
     }
 
     public SecureAreaPage assertOpened() {
-        assertThat(page).hasURL(Pattern.compile("/secure$"));
-        assertThat(heading).isVisible();
-        assertThat(flashMessage).containsText("You logged into a secure area!");
-        assertThat(logoutLink).isVisible();
-
+        assertAll("Защищённая страница",
+                () -> assertThat(page).hasURL(Pattern.compile("/secure$")),
+                () -> assertThat(heading).isVisible(),
+                () -> assertThat(flashMessage).containsText("You logged into a secure area!"),
+                () -> assertThat(logoutLink).isVisible());
         return this;
+    }
+
+    public LoginPage logout() {
+        logoutLink.click();
+        return new LoginPage(page);
     }
 }

@@ -4,6 +4,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public final class DropdownPage {
     private final Page page;
@@ -28,8 +29,9 @@ public final class DropdownPage {
     }
 
     public DropdownPage assertSelected(String expectedValue, String expectedText) {
-        assertThat(dropdown).hasValue(expectedValue);
-        assertThat(selectedOption).hasText(expectedText);
+        assertAll("Выбранный пункт списка",
+                () -> assertThat(dropdown).hasValue(expectedValue),
+                () -> assertThat(selectedOption).hasText(expectedText));
         return this;
     }
 }
