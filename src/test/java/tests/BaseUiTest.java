@@ -40,24 +40,24 @@ abstract class BaseUiTest {
     }
 
     protected LoginPage openLoginPage() {
-        return new LoginPage(page).open();
+        return new LoginPage(page).get();
     }
 
     protected CheckboxesPage openCheckboxesPage() {
-        return new CheckboxesPage(page).open();
+        return new CheckboxesPage(page).get();
     }
 
     protected DropdownPage openDropdownPage() {
-        return new DropdownPage(page).open();
+        return new DropdownPage(page).get();
     }
 
     protected AddRemoveElementsPage openAddRemoveElementsPage() {
-        return new AddRemoveElementsPage(page).open();
+        return new AddRemoveElementsPage(page).get();
     }
 
     protected void withCheckboxesPage(Consumer<CheckboxesPage> scenario) {
         try (BrowserContext dynamicContext = newContext()) {
-            scenario.accept(new CheckboxesPage(dynamicContext.newPage()).open());
+            scenario.accept(new CheckboxesPage(dynamicContext.newPage()).get());
         }
     }
 

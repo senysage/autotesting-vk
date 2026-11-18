@@ -6,14 +6,16 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import models.Credentials;
 import pages.LoginPage;
+
+import static data.LoginData.validUser;
+import static data.LoginData.wrongPassword;
 
 @Tag("authentication")
 @DisplayName("The Internet: авторизация")
 class LoginTest extends BaseUiTest {
-    private static final String USERNAME = "tomsmith";
-    private static final String PASSWORD = "SuperSecretPassword!";
     private LoginPage loginPage;
 
     @BeforeEach
@@ -28,16 +30,26 @@ class LoginTest extends BaseUiTest {
         @Tag("smoke")
         @DisplayName("Пользователь попадает в защищённую область")
         void validUserCanSignIn() {
-            loginPage.signIn(USERNAME, PASSWORD)
-                    .assertOpened();
+            loginPage.signIn(validUser())
+            .assertLoginSuccess();
         }
 
         @Test
         @DisplayName("После выхода снова отображается форма входа")
         void userCanLogOut() {
-            loginPage.signIn(USERNAME, PASSWORD)
-                    .assertOpened()
+            loginPage.signIn(validUser())
+                    .assertLoginSuccess()
                     .logout()
+                    .assertOpened();
+        }
+
+        @Test
+        @DisplayName("Повторное открытие защищённой страницы сохраняет авторизацию")
+        void sessionSurvivesReopeningSecureArea() {
+            loginPage.signIn(validUser())
+                    .get()
+                    .assertLoginSuccess()
+                    .open()
                     .assertOpened();
         }
     }
@@ -45,17 +57,21 @@ class LoginTest extends BaseUiTest {
     @Nested
     @DisplayName("Неверные учётные данные")
     class InvalidCredentials {
-        @ParameterizedTest(name = "Набор {index}: {2}")
-        @CsvSource({
-                "tomsmith, wrong_password, Your password is invalid!",
-                "unknown_user, SuperSecretPassword!, Your username is invalid!",
-                "'', SuperSecretPassword!, Your username is invalid!",
-                "tomsmith, '', Your password is invalid!"
-        })
+        @ParameterizedTest(name = "Набор {index}: {1}")
+        @MethodSource("data.LoginData#invalidCredentials")
         @DisplayName("Ошибка авторизации: неверные данные")
-        void invalidCredentialsShowError(String username, String password, String expectedError) {
-            loginPage.signInExpectingError(username, password)
+        void invalidCredentialsShowError(Credentials credentials, String expectedError) {
+            loginPage.signInExpectingError(credentials)
                     .assertError(expectedError);
+        }
+
+        @Test
+        @DisplayName("После ошибки можно войти с правильными учётными данными")
+        void userCanSignInAfterCorrectingPassword() {
+            loginPage.signInExpectingError(wrongPassword())
+                    .assertError("Your password is invalid!")
+                    .signIn(validUser())
+                    .assertLoginSuccess();
         }
     }
 }
