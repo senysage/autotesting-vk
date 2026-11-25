@@ -13,7 +13,8 @@ public final class DropdownPage extends LoadablePage<DropdownPage> {
 
     public DropdownPage(Page page) {
         super(page, "/dropdown", "Dropdown List");
-        dropdown = page.getByRole(AriaRole.COMBOBOX);
+
+        dropdown = content().getByRole(AriaRole.COMBOBOX);
         selectedOption = dropdown.locator("option:checked");
     }
 
@@ -26,6 +27,7 @@ public final class DropdownPage extends LoadablePage<DropdownPage> {
         assertAll("Выбранный пункт списка",
                 () -> assertThat(dropdown).hasValue(expectedValue),
                 () -> assertThat(selectedOption).hasText(expectedText));
+
         return this;
     }
 

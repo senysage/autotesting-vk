@@ -11,6 +11,7 @@ public final class LoginPage extends LoadablePage<LoginPage> {
 
     public LoginPage(Page page) {
         super(page, "/login", "Login Page");
+
         loginForm = new LoginForm(page.locator("#login"));
         flashMessage = new FlashMessage(page.locator("#flash"));
     }

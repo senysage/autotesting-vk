@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 abstract class BaseUiTest {
     private static Playwright playwright;
     private static Browser browser;
+
     private BrowserContext context;
     private Page page;
 
@@ -65,8 +66,10 @@ abstract class BaseUiTest {
         BrowserContext newContext = browser.newContext(new Browser.NewContextOptions()
                 .setBaseURL(System.getProperty("baseUrl", "https://the-internet.herokuapp.com/"))
                 .setViewportSize(1280, 900));
+
         newContext.setDefaultTimeout(10_000);
         newContext.setDefaultNavigationTimeout(30_000);
+
         return newContext;
     }
 

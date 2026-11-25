@@ -5,6 +5,8 @@ import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Named.named;
+
 public final class LoginData {
     private static final Credentials VALID_USER = new Credentials("tomsmith", "SuperSecretPassword!");
 
@@ -21,10 +23,13 @@ public final class LoginData {
 
     public static Stream<Arguments> invalidCredentials() {
         return Stream.of(
-                Arguments.of(wrongPassword(), "Your password is invalid!"),
-                Arguments.of(new Credentials("unknown_user", VALID_USER.password()), "Your username is invalid!"),
-                Arguments.of(new Credentials("", VALID_USER.password()), "Your username is invalid!"),
-                Arguments.of(new Credentials(VALID_USER.username(), ""), "Your password is invalid!")
+                Arguments.of(named("Неверный пароль", wrongPassword()), "Your password is invalid!"),
+                Arguments.of(named("Неизвестный пользователь", new Credentials("unknown_user", VALID_USER.password())),
+                        "Your username is invalid!"),
+                Arguments.of(named("Пустое имя пользователя", new Credentials("", VALID_USER.password())),
+                        "Your username is invalid!"),
+                Arguments.of(named("Пустой пароль", new Credentials(VALID_USER.username(), "")),
+                        "Your password is invalid!")
         );
     }
 }

@@ -12,10 +12,14 @@ public final class AddRemoveElementsPage extends LoadablePage<AddRemoveElementsP
 
     public AddRemoveElementsPage(Page page) {
         super(page, "/add_remove_elements/", "Add/Remove Elements");
-        addButton = page.getByRole(AriaRole.BUTTON,
-                new Page.GetByRoleOptions().setName("Add Element").setExact(true));
-        deleteButtons = page.getByRole(AriaRole.BUTTON,
-                new Page.GetByRoleOptions().setName("Delete").setExact(true));
+
+        addButton = content().getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions()
+                .setName("Add Element")
+                .setExact(true));
+
+        deleteButtons = content().locator("#elements").getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions()
+                .setName("Delete")
+                .setExact(true));
     }
 
     public AddRemoveElementsPage addElement() {

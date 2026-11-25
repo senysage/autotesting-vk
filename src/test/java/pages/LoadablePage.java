@@ -10,23 +10,28 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public abstract class LoadablePage<T extends LoadablePage<T>> {
     private final Page page;
     private final String path;
+    private final Locator content;
     private final Locator heading;
 
     protected LoadablePage(Page page, String path, String headingText) {
         this.page = page;
         this.path = path;
-        heading = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName(headingText).setExact(true));
+
+        content = page.getByRole(AriaRole.MAIN);
+        heading = content.getByRole(AriaRole.HEADING, new Locator.GetByRoleOptions().setName(headingText).setExact(true));
     }
 
     public final T get() {
         if (!isLoaded()) {
             load();
         }
+
         return assertOpened();
     }
 
     public final T open() {
         load();
+
         return assertOpened();
     }
 
@@ -35,11 +40,16 @@ public abstract class LoadablePage<T extends LoadablePage<T>> {
                 () -> assertThat(page).hasURL(path),
                 () -> assertThat(heading).isVisible());
         assertContentReady();
+
         return self();
     }
 
     protected final Page page() {
         return page;
+    }
+
+    protected final Locator content() {
+        return content;
     }
 
     protected abstract void assertContentReady();

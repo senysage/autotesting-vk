@@ -31,7 +31,7 @@ class LoginTest extends BaseUiTest {
         @DisplayName("Пользователь попадает в защищённую область")
         void validUserCanSignIn() {
             loginPage.signIn(validUser())
-            .assertLoginSuccess();
+                    .assertLoginSuccess();
         }
 
         @Test
@@ -57,7 +57,7 @@ class LoginTest extends BaseUiTest {
     @Nested
     @DisplayName("Неверные учётные данные")
     class InvalidCredentials {
-        @ParameterizedTest(name = "Набор {index}: {1}")
+        @ParameterizedTest(name = "{0}")
         @MethodSource("data.LoginData#invalidCredentials")
         @DisplayName("Ошибка авторизации: неверные данные")
         void invalidCredentialsShowError(Credentials credentials, String expectedError) {

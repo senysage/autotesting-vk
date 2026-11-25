@@ -12,7 +12,8 @@ public final class CheckboxesPage extends LoadablePage<CheckboxesPage> {
 
     public CheckboxesPage(Page page) {
         super(page, "/checkboxes", "Checkboxes");
-        checkboxes = page.getByRole(AriaRole.CHECKBOX);
+
+        checkboxes = content().locator("#checkboxes").getByRole(AriaRole.CHECKBOX);
     }
 
     public int checkboxCount() {
@@ -34,6 +35,7 @@ public final class CheckboxesPage extends LoadablePage<CheckboxesPage> {
         } else {
             assertThat(checkboxes.nth(index)).not().isChecked();
         }
+
         return this;
     }
 

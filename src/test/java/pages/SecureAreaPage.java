@@ -15,8 +15,10 @@ public final class SecureAreaPage extends LoadablePage<SecureAreaPage> {
 
     public SecureAreaPage(Page page) {
         super(page, "/secure", "Secure Area");
+
         flashMessage = new FlashMessage(page.locator("#flash"));
-        logoutLink = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName(Pattern.compile("Logout")));
+        logoutLink = content().getByRole(AriaRole.LINK,
+                new Locator.GetByRoleOptions().setName(Pattern.compile("Logout")));
     }
 
     public SecureAreaPage assertLoginSuccess() {
